@@ -1,24 +1,22 @@
-Class Application
+class Application
+  @@items = [Item.new("Tomatoes", "2.99"), Item.new("Strawberries", "3.99"), Item.new("Blueberries", "1.99"), Item.new("Pears", "0.99")]
 
   def call(env)
-    resp = Rack::Response.new 
-    req = Rack::Response.new(env)
-    
+    resp = Rack::Response.new
+    req = Rack::Request.new(env)
+
     if req.path.match(/items/)
-      item = req.path.split("/items/").last 
-      if item_object = @@items.detect {|i| i.name == item}
-        resp.write "#{item_object.name}: $#{item_object.price}"
+      item_name = req.path.split("/items/").last
+      if item = @@items.find{|i| i.name == item_name}
+        resp.write item.price
       else
-        resp.write "Item not found"
         resp.status = 400
+        resp.write "Item not found"
       end
     else
+      resp.status=404
       resp.write "Route not found"
-      resp.status = 404
     end
-    
     resp.finish
   end
-  
 end
-        
