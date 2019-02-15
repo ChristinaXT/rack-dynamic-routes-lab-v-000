@@ -13,5 +13,5 @@ Class Application
         resp.status = 400
       end
     else
-      
+      resp.write
         
